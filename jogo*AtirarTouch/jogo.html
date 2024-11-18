@@ -1,0 +1,96 @@
+<!DOCTYPE >
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    </head>
+	<body>
+		<div class="fundo" id="fundo">
+			Fundo			
+			<div id="div1">
+				D1
+			</div>
+		</div>	
+
+		<div class="painel">
+			<button type="button"  id="iniciar" >Iniciar</button><br>
+			<hr>	
+		</div>
+		
+		<script>
+//Ao carregar a página estas linhas são executadas.
+//Variáveis globais 
+
+let podeAtirar = true;
+let bala;
+let timerBala;
+
+//Adiciona o evento click no botão iniciar
+document.querySelector("#iniciar").addEventListener("click", iniciar);
+
+//*****  Funções  *******//
+
+function iniciar(){
+	// Posicionamento inicial
+	div1.style.left="35vw";
+	div1.style.top="35vw";	
+	
+	//Para desktop:ativa funcao ao mover o mouse e ao clicar no fundo
+	document.addEventListener('mousemove', moverMouse);
+	document.querySelector("#fundo").addEventListener("click", atirar);
+	
+	//Para celular:ativa funcao ao mover o toque e ao tocar no fundo
+	document.addEventListener('touchmove', moverCelular);
+	document.querySelector("#fundo").addEventListener('touchstart', atirar);	
+	
+	//deixa o botão iniciar invisivel
+	document.querySelector("#iniciar").style.visibility="hidden";
+}
+
+function moverMouse(event) {
+        let fundoRect = fundo.getBoundingClientRect();
+		let div1Rect = div1.getBoundingClientRect();
+        let div1Left = event.clientX - fundoRect.left - div1Rect.width / 2;
+        if (div1Left < 0) div1Left = 0;
+        if (div1Left > fundoRect.width - div1Rect.width) div1Left = fundoRect.width - div1Rect.width;
+        div1.style.left = `${div1Left}px`;
+};
+
+function moverCelular (event) {
+        let fundoRect = fundo.getBoundingClientRect();
+		let div1Rect = div1.getBoundingClientRect();
+        let div1Left = event.touches[0].clientX - fundoRect.left - div1Rect.width / 2;
+        if (div1Left < 0) div1Left = 0;
+        if (div1Left > fundoRect.width - div1Rect.width) div1Left = fundoRect.width - div1Rect.width;
+        div1.style.left = `${div1Left}px`;
+    };
+
+function atirar(){
+	if(podeAtirar==true){
+		bala = document.createElement("div");
+		bala.classList.add("bullets");
+		bala.style.left=parseInt(getComputedStyle(div1).left);
+		fundo.appendChild(bala);
+		podeAtirar=false;
+		timerBala = setInterval("moveBala(bala)",10);
+	}
+}
+
+function moveBala(bala){		  
+	let top =  parseInt(getComputedStyle(bala).top);
+	bala.style.top=top-3;
+	if (top <= 0)
+	{
+		bala.parentElement.removeChild(bala); 
+		clearInterval(timerBala);
+		podeAtirar=true;
+	}
+};
+
+
+
+		</script>
+	</body>
+</html>
